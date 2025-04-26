@@ -1,0 +1,46 @@
+name: MLOps Pipeline  # Đặt tên cho workflow
+
+on:
+  push:
+    branches:
+      - main   # Khi có thay đổi trong nhánh "main"
+  pull_request:
+    branches:
+      - main   # Khi có pull request tới nhánh "main"
+
+jobs:
+  train_and_deploy:
+    runs-on: ubuntu-latest   # Chạy trên môi trường Ubuntu mới nhất
+
+    steps:   # Các bước thực hiện trong job
+      # Step 1: Checkout mã nguồn từ GitHub repository
+      - name: Checkout repository
+        uses: actions/checkout@v2   # Dùng hành động "checkout" để lấy mã nguồn
+
+      # Step 2: Cài đặt Python
+      - name: Set up Python
+        uses: actions/setup-python@v2   # Cài đặt phiên bản Python bạn muốn sử dụng
+        with:
+          python-version: '3.8'   # Cài đặt Python phiên bản 3.8
+
+      # Step 3: Cài đặt các phụ thuộc (dependencies) từ tệp requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip   # Cập nhật pip
+          pip install -r requirements.txt   # Cài đặt các thư viện cần thiết từ tệp requirements.txt
+
+      # Step 4: Chạy huấn luyện mô hình (mã trong train.py)
+      - name: Train model
+        run: python train.py   # Thực hiện huấn luyện mô hình từ tệp train.py
+
+      # Step 5: Kiểm tra ảnh trong thư mục test_images và dự đoán
+      - name: Process images and make predictions
+        run: |
+          python -c "import train; train.process_images_in_folder('test_images', train.model, train.class_names)"   # Dự đoán các ảnh trong thư mục test_images
+
+      # Step 6: Lưu mô hình đã huấn luyện (optional)
+      - name: Upload model to MLflow (Optional)
+        uses: actions/upload-artifact@v2   # Tải lên artifact (ví dụ như mô hình đã huấn luyện)
+        with:
+          name: fmnist_model
+          path: fmnist_model.pth   # Đường dẫn tới mô hình đã huấn luyện

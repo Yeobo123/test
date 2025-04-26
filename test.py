@@ -1,16 +1,10 @@
-import mlflow
-from mlflow.models import Model
+# test_model.py
 
-model_uri = 'runs:/3b6935d1e1bc48e785a826a321c6d0c5/fmnist_model'
-# The model is logged with an input example
-pyfunc_model = mlflow.pyfunc.load_model(model_uri)
-input_data = pyfunc_model.input_example
+import torch
+from train import get_model  # đổi 'your_main_file_name' thành tên file code chính (bỏ .py)
 
-# Verify the model with the provided input data using the logged dependencies.
-# For more details, refer to:
-# https://mlflow.org/docs/latest/models.html#validate-models-before-deployment
-mlflow.models.predict(
-    model_uri=model_uri,
-    input_data=input_data,
-    env_manager="uv",
-)
+def test_model_output_shape():
+    model, _, _ = get_model()
+    dummy_input = torch.randn(1, 28 * 28)
+    output = model(dummy_input)
+    assert output.shape == (1, 10), "Output shape should be (1, 10)"
