@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/mlops/mlruns/283710746320417729/e33deec63f914546a8a1768bca9bdb34/artifacts
+end_time: 1745639177411
+entry_point_name: ''
+experiment_id: '283710746320417729'
+lifecycle_stage: active
+run_id: e33deec63f914546a8a1768bca9bdb34
+run_name: omniscient-bird-127
+run_uuid: e33deec63f914546a8a1768bca9bdb34
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745639177392
+status: 4
+tags: []
+user_id: hai

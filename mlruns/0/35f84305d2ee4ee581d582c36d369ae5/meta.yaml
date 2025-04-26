@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/mlops/mlruns/0/35f84305d2ee4ee581d582c36d369ae5/artifacts
+end_time: 1745639594605
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 35f84305d2ee4ee581d582c36d369ae5
+run_name: rebellious-rook-456
+run_uuid: 35f84305d2ee4ee581d582c36d369ae5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745639549349
+status: 3
+tags: []
+user_id: hai

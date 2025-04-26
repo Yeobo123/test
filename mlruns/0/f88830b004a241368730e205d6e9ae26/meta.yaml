@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/mlops/mlruns/0/f88830b004a241368730e205d6e9ae26/artifacts
+end_time: 1745638537462
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f88830b004a241368730e205d6e9ae26
+run_name: peaceful-doe-333
+run_uuid: f88830b004a241368730e205d6e9ae26
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745638487301
+status: 3
+tags: []
+user_id: hai
