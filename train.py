@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
-from torch.optim import SGD
+from torch.optim import Adam
 import mlflow
 import mlflow.pytorch
 from PIL import Image
@@ -13,9 +13,17 @@ from PIL import Image
 # Thiết bị
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
+transform_train = transforms.Compose([
+    transforms.RandomRotation(10),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomAffine(translate=(0.1,0.1), degrees=0),
+    transforms.ToTensor()
+])
+
+
 # ===== Load dữ liệu =====
 data_folder = './data/FMNIST'
-fmnist = datasets.FashionMNIST(data_folder, download=True, train=True)
+fmnist = datasets.FashionMNIST(data_folder, download=True, train=True, transform=transform_train)
 tr_images = fmnist.data
 tr_targets = fmnist.targets
 class_names = fmnist.classes
@@ -39,12 +47,16 @@ def get_data():
 # ===== Model =====
 def get_model():
     model = nn.Sequential(
-        nn.Linear(28 * 28, 1000),
-        nn.ReLU(),
-        nn.Linear(1000, 10)
+    nn.Linear(28*28, 512),
+    nn.ReLU(),
+    nn.Dropout(0.2),
+    nn.Linear(512, 256),
+    nn.ReLU(),
+    nn.Dropout(0.2),
+    nn.Linear(256, 10)
     ).to(device)
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = SGD(model.parameters(), lr=1e-2)
+    optimizer = Adam(model.parameters(), lr=1e-3)
     return model, loss_fn, optimizer
 
 def train_batch(x, y, model, opt, loss_fn):
@@ -105,7 +117,7 @@ def train_with_mlflow():
     model, loss_fn, optimizer = get_model()
 
     losses, accuracies = [], []
-    epochs = 5
+    epochs = 50
     lr = 1e-2
     
 
@@ -113,8 +125,8 @@ def train_with_mlflow():
     with mlflow.start_run():
         mlflow.log_param("epochs", epochs)
         mlflow.log_param("lr", lr)
-        mlflow.log_param("optimizer", "SGD")
-        mlflow.log_param("model_architecture", "Linear(784 → 1000 → 10)")
+        mlflow.log_param("optimizer", "Adam")
+        mlflow.log_param("model_architecture", "Linear")
 
         for epoch in range(epochs):
             print(f"\nEpoch {epoch + 1}")
@@ -137,6 +149,8 @@ def train_with_mlflow():
             mlflow.log_metric("accuracy", epoch_accuracy, step=epoch)
             losses.append(epoch_loss)
             accuracies.append(epoch_accuracy)
+            
+            print(f"Loss: {epoch_loss:.4f} | Accuracy: {epoch_accuracy*100:.2f}%")
         
 
 
